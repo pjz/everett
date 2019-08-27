@@ -112,6 +112,7 @@ class TestConfigYamlEnv:
         yaml_filename = tmpdir / 'config.yaml'
         yaml_filename.write(YAML_LISTS)
 
-        cie = ConfigYamlEnv([str(yaml_filename)])
-        assert cie.get('foo') == 'bar,baz,bal'
+        cye = ConfigYamlEnv([str(yaml_filename)])
+        assert cye.get('foo') == cye.list_delim.join(['bar', 'baz', 'bal'])
+        assert ['bar', 'baz', 'bal'] == cye.ListOf(str)(cye.get('foo'))
 

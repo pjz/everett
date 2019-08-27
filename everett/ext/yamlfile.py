@@ -16,7 +16,7 @@ import os
 import yaml
 
 from everett import ConfigurationError, NO_VALUE
-from everett.manager import generate_uppercase_key, get_key_from_envs, listify
+from everett.manager import generate_uppercase_key, get_key_from_envs, listify, get_parser
 
 
 logger = logging.getLogger('everett')
@@ -108,7 +108,8 @@ class ConfigYamlEnv(object):
 
     """
 
-    def __init__(self, possible_paths):
+    def __init__(self, possible_paths, list_delim='\u2014'):
+        self.list_delim = list_delim
         self.cfg = {}
         self.path = None
         possible_paths = listify(possible_paths)
@@ -140,7 +141,7 @@ class ConfigYamlEnv(object):
                 if isinstance(val, dict):
                     cfg.update(traverse(namespace + [key], val))
                 elif isinstance(val, list):
-                    cfg['_'.join(namespace + [key]).upper()] = ','.join(val)
+                    cfg['_'.join(namespace + [key]).upper()] = self.list_delim.join(val)
                 elif isinstance(val, str):
                     cfg['_'.join(namespace + [key]).upper()] = val
                 else:
@@ -165,6 +166,15 @@ class ConfigYamlEnv(object):
         logger.debug('Searching %r for key: %s, namepsace: %s', self, key, namespace)
         full_key = generate_uppercase_key(key, namespace)
         return get_key_from_envs(self.cfg, full_key)
+
+    def ListOf(self, sub_parser):
+        parser = get_parser(sub_parser)
+        def yaml_listof(value):
+            if value:
+                return [parser(token) for token in value.split(self.list_delim)]
+            else:
+                return []
+        return yaml_listof
 
     def __repr__(self):
         return '<ConfigYamlEnv: %s>' % self.path
