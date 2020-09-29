@@ -104,7 +104,7 @@ class ConfigYamlEnv(object):
     * ``FOO``
     * ``FOO2``
     * ``NAMESPACE_FOO``
-    * ``NAMESPACE_NAMEPSACE2_FOO``
+    * ``NAMESPACE_NAMESPACE2_FOO``
 
     """
 
