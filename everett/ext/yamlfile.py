@@ -159,7 +159,7 @@ class ConfigYamlEnv(object):
         if not self.path:
             return NO_VALUE
 
-        logger.debug("Searching %r for key: %s, namepsace: %s", self, key, namespace)
+        logger.debug("Searching %r for key: %s, namespace: %s", self, key, namespace)
         full_key = generate_uppercase_key(key, namespace)
         return get_key_from_envs(self.cfg, full_key)
 
